@@ -1,23 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import DropDown from "./DropDown/DropDown";
 
 function App() {
+
+  const handleChange = (selectedOptions) => {
+    console.log(selectedOptions)
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="container">
+        <p>Select on option</p>
+        <DropDown
+          placeHolder="Age"
+          onChange={handleChange}
+          size="lg"
+          multiSelect
+          options={[
+            "Hello There",
+            "World",
+            "My name",
+            "Christopher Hawkings",
+            "Nolan",
+            "Christine Na",
+          ]}
+          autoScale
+        />
+        <p>This is another item</p>
+      </div>
     </div>
   );
 }
