@@ -77,6 +77,7 @@ function App() {
       <div className="container">
         <h1>Demo</h1>
         <p>Here is a multi select element with custom width: </p>
+
         <DropDown
           placeHolder="Name"
           onChange={handleChangeName}
@@ -84,13 +85,16 @@ function App() {
           options={multiSelectOptions}
           width="400px"
         />
+        
         <p>Here is a single select element with auto width: </p>
+
         <DropDown
           placeHolder="Number"
           onChange={handleChangeNumber}
           options={singleSelectOptions}
           autoWidth
         />
+
         {selectedNames.length > 0 && (
           <>
             <h3>Selected Names:</h3>
