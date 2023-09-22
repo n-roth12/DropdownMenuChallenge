@@ -1,62 +1,78 @@
 import "./DropDown.css";
+import DropDownBox from "./DropDownBox/DropDownBox";
 import DropDownList from "./DropDownList/DropDownList";
-import { useState, useEffect } from "react";
+import { useState, useRef } from "react";
+import useDetectOutsideClick from "./utils/useDetectOutsideClick";
 
-const DropDown = ({ multiSelect, options, placeHolder, size, autoScale, onChange }) => {
+const DropDown = ({
+  multiSelect,
+  options,
+  placeHolder,
+  onChange,
+  width,
+  autoWidth,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOptions, setSelectedOptions] = useState(new Set());
+  const [selectedKeys, setSelectedKeys] = useState(new Set());
+  const dropDownRef = useRef(null);
+  useDetectOutsideClick(dropDownRef, () => setIsOpen(false));
 
-  const toggleOption = (option) => {
-    if (multiSelect) {
-      var newSelectedOptions = new Set([...selectedOptions]);
-      if (selectedOptions.has(option)) {
-        newSelectedOptions.delete(option);
+  const toggleOption = (key) => {
+    var newSelectedKeys;
+    if (key === "none") {
+      newSelectedKeys = new Set();
+    } else if (key === "all") {
+      newSelectedKeys = new Set([...options.map((option) => option.key)]);
+    } else if (multiSelect) {
+      newSelectedKeys = new Set([...selectedKeys]);
+      if (selectedKeys.has(key)) {
+        newSelectedKeys.delete(key);
       } else {
-        newSelectedOptions.add(option);
+        newSelectedKeys.add(key);
       }
-      setSelectedOptions(newSelectedOptions);
-      onChange(Array.from(newSelectedOptions))
     } else {
-      setSelectedOptions(new Set([option]));
-      onChange(option)
+      newSelectedKeys = new Set([key]);
     }
     if (!multiSelect) {
+      onChange(options.find((option) => option.key === key));
       setIsOpen(false);
+    } else {
+      onChange(options.filter((option) => newSelectedKeys.has(option.key)));
     }
+    setSelectedKeys(newSelectedKeys);
   };
 
-  const getPlaceHolderContent = () => {
-    let placeHolderContent;
-    if (multiSelect) {
-      if (!selectedOptions.size > 0) {
-        placeHolderContent = "";
-      } else {
-        let optionsPlaceHolder = "";
-        for (const value of selectedOptions) {
-          optionsPlaceHolder += value + ", ";
-        }
-        placeHolderContent = optionsPlaceHolder.slice(0, -2);
-      }
-      return placeHolderContent;
-    } else {
-      placeHolderContent = selectedOptions;
-      return placeHolderContent
-    }
+  const getSelectedValues = (_options) => {
+    var result = _options
+      .filter((option) => {
+        return selectedKeys.has(option.key);
+      })
+      .map((filteredOption) => filteredOption.value);
+    return result;
   };
 
   return (
-    <div className={`drop-down ${isOpen ? "open" : "closed"} ${size} ${autoScale ? "auto-scale" : ""}`}>
-      <div className="placeholder-wrapper" onClick={() => setIsOpen(!isOpen)}>
-      <span className={`test ${(!selectedOptions?.size > 0 && !isOpen) ? "bottom" : "top"}`}>{placeHolder}</span>
-        <span className="placeholder">{getPlaceHolderContent()}</span>
-        <div className={`arrow ${isOpen ? "up" : "down"}`}></div>
-      </div>
+    <div
+      ref={dropDownRef}
+      className={`drop-down ${isOpen ? "open" : "closed"} ${
+        autoWidth ? "auto-width" : ""
+      }`}
+    >
+      <DropDownBox
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        selectedValues={getSelectedValues(options)}
+        placeHolder={placeHolder}
+        multiSelect={multiSelect}
+        width={width}
+      />
       {isOpen && (
         <DropDownList
           options={options}
           isMultiSelect={multiSelect}
           toggleOption={toggleOption}
-          selectedOptions={selectedOptions}
+          selectedKeys={selectedKeys}
+          width={width}
         />
       )}
     </div>

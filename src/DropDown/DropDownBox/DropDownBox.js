@@ -1,22 +1,51 @@
-const DropDownBox = ({ selectedOptions, placeHolder }) => {
+import "./DropDownBox.css";
 
+const DropDownBox = ({
+  isOpen,
+  setIsOpen,
+  selectedValues,
+  placeHolder,
+  multiSelect,
+  width,
+}) => {
   const getPlaceHolderContent = () => {
     let placeHolderContent;
-    if (!selectedOptions.size > 0) {
-      placeHolderContent = placeHolder;
-    } else {
-      let optionsPlaceHolder = "";
-      for (const value of selectedOptions) {
-        optionsPlaceHolder += value + ", ";
+    if (multiSelect) {
+      if (!selectedValues.length > 0) {
+        placeHolderContent = "";
+      } else {
+        let optionsPlaceHolder = "";
+        for (const value of selectedValues) {
+          optionsPlaceHolder += value + ", ";
+        }
+        placeHolderContent = optionsPlaceHolder.slice(0, -2);
       }
-      placeHolderContent = optionsPlaceHolder;
+      return placeHolderContent;
+    } else {
+      placeHolderContent = selectedValues;
+      return placeHolderContent;
     }
-    return placeHolderContent;
   };
 
-  return <div className="drop-down-box">
-    <span>{getPlaceHolderContent()}</span>
-  </div>;
+  return (
+    <div
+      className="drop-down-box"
+      onClick={() => setIsOpen(!isOpen)}
+      style={{ width: width }}
+    >
+      <span
+        className={`placeholder ${
+          !selectedValues?.length > 0 && !isOpen ? "bottom" : "top"
+        }`}
+      >
+        {placeHolder}
+      </span>
+      <span className="selected-values-indicator">
+        {getPlaceHolderContent()}
+      </span>
+      <div className={`arrow ${isOpen ? "up" : "down"}`}></div>
+    </div>
+  );
 };
 
 export default DropDownBox;

@@ -1,11 +1,11 @@
 .drop-down-list {
-    margin-top: 1px;
-    width: fit-content;
-    background-color: white;
-    box-shadow: 4px 4px 5px lightgrey, -4px 4px 5px lightgrey;
-    z-index: 1;
-    position: absolute;
-    max-height: 200px;
-    overflow-y: scroll;
-    border-radius: 4px;
+  margin-top: 1px;
+  width: fit-content;
+  background-color: white;
+  box-shadow: 4px 4px 5px lightgrey, -4px 4px 5px lightgrey;
+  z-index: 1;
+  position: absolute;
+  max-height: 200px;
+  overflow-y: scroll;
+  border-radius: 4px;
 }
